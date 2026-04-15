@@ -1,69 +1,509 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SongSQA: Subjective Evaluation Demo</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anonymous Supplementary Audio Demo</title>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            max-width: 800px; 
-            margin: 0 auto; 
-            padding: 40px 20px; 
-            line-height: 1.6; 
-            color: #333; 
-            background-color: #fcfcfc; 
+        :root {
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --text: #222;
+            --subtext: #666;
+            --border: #e5e7eb;
+            --accent: #2563eb;
+            --accent-soft: #eff6ff;
         }
-        h1 { border-bottom: 2px solid #eaecef; padding-bottom: 10px; }
-        .song-container { margin-bottom: 40px; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; }
-        audio { width: 100%; margin-top: 5px; margin-bottom: 15px; outline: none; }
-        .label { font-weight: bold; color: #555; }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 40px 20px 64px;
+        }
+
+        header.hero {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px 28px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            margin: 0 0 12px 0;
+            font-size: 2rem;
+            line-height: 1.2;
+        }
+
+        h2 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 1.45rem;
+            line-height: 1.3;
+        }
+
+        h3 {
+            margin: 0 0 8px 0;
+            font-size: 1.15rem;
+        }
+
+        p {
+            margin: 0 0 14px 0;
+        }
+
+        .lead {
+            font-size: 1.05rem;
+            color: #333;
+        }
+
+        .headphone-note {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: #fff8e6;
+            border: 1px solid #f3df9b;
+            font-weight: 600;
+        }
+
+        .nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: var(--accent);
+            background: var(--accent-soft);
+            border: 1px solid #dbeafe;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .section-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 22px;
+        }
+
+        .muted {
+            color: var(--subtext);
+        }
+
+        .figure-box {
+            margin: 20px 0 18px 0;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fafafa;
+        }
+
+        .figure-frame {
+            width: 100%;
+            height: 460px;
+            border: 0;
+            display: block;
+            background: #fff;
+        }
+
+        .figure-fallback {
+            padding: 14px 16px;
+            border-top: 1px solid var(--border);
+            font-size: 0.95rem;
+            color: var(--subtext);
+            background: #fcfcfc;
+        }
+
+        .figure-fallback a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .caption {
+            padding: 14px 16px 18px;
+            font-size: 0.95rem;
+            color: #444;
+            border-top: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 14px;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            background: #fff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 680px;
+        }
+
+        thead th {
+            background: #f3f4f6;
+            font-weight: 700;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+            font-weight: 700;
+        }
+
+        .song-container {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 22px 20px;
+            background: #fff;
+            margin-top: 18px;
+        }
+
+        .song-header {
+            margin-bottom: 10px;
+        }
+
+        .song-note {
+            margin: 0;
+            color: var(--subtext);
+            font-size: 0.95rem;
+        }
+
+        .audio-block {
+            margin-top: 14px;
+            padding: 14px 14px 10px;
+            border: 1px solid #e9eaee;
+            border-radius: 12px;
+            background: #fafafa;
+        }
+
+        .label {
+            font-weight: 700;
+            color: #444;
+            margin-bottom: 8px;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 4px;
+            margin-bottom: 4px;
+            outline: none;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 0.95rem;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .page {
+                padding: 20px 14px 40px;
+            }
+
+            header.hero,
+            .section-card {
+                padding: 22px 18px;
+            }
+
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .figure-frame {
+                height: 360px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>SongSQA: Subjective Evaluation Demo</h1>
-    <p>This page provides the audio samples used in the small-scale pairwise subjective evaluation. For each of the 5 randomly selected songs, we present two segments: one predicted by the model as lower quality, and the other as higher quality.</p>
-    <p>🎧 <strong>Please use headphones for the best listening experience.</strong></p>
-    
-    <div class="song-container">
-        <h3>Song 1</h3>
-        <div class="label">Predicted Lower Quality</div>
-        <audio controls src="./demo_audio/4_011_8_A.mp3"></audio>
-        <div class="label">Predicted Higher Quality</div>
-        <audio controls src="./demo_audio/4_011_51_C.mp3"></audio>
-    </div>
+    <div class="page">
+        <header class="hero">
+            <h1>Anonymous Supplementary Audio Demo</h1>
+            <p class="lead">
+                This page accompanies the supplementary material of an anonymous submission.
+                It provides representative audio excerpts and additional analysis for a small-scale
+                pairwise subjective evaluation.
+            </p>
+            <div class="headphone-note">🎧 Please use headphones for the best listening experience.</div>
 
-    <div class="song-container">
-        <h3>Song 2</h3>
-        <div class="label">Predicted Lower Quality</div>
-        <audio controls src="./demo_audio/5_028_9_A.mp3"></audio>
-        <div class="label">Predicted Higher Quality</div>
-        <audio controls src="./demo_audio/5_028_39_C.mp3"></audio>
-    </div>
+            <nav class="nav" aria-label="Page navigation">
+                <a href="#overview">Overview</a>
+                <a href="#case-study">Case Study</a>
+                <a href="#subjective-evaluation">Subjective Evaluation</a>
+                <a href="#audio-demo">Audio Demo</a>
+            </nav>
+        </header>
 
-    <div class="song-container">
-        <h3>Song 3</h3>
-        <div class="label">Predicted Lower Quality</div>
-        <audio controls src="./demo_audio/9_089_3_A.mp3"></audio>
-        <div class="label">Predicted Higher Quality</div>
-        <audio controls src="./demo_audio/9_089_15_C.mp3"></audio>
-    </div>
+        <main>
+            <section id="overview" class="section-card">
+                <h2>Overview</h2>
+                <p>
+                    We provide audio samples from five randomly selected full-length songs from the test set.
+                    For each song, two specific segments are selected according to the predictions of our framework:
+                    Segment A is predicted as lower quality, and Segment B is predicted as higher quality.
+                </p>
+                <p>
+                    This page combines the audio demo with the supplementary analysis. We first present a detailed
+                    case study using the excerpts from Song 1 to illustrate how the framework captures local variations
+                    in singing quality. We then summarize the results of a subjective evaluation across all five songs
+                    to examine whether the predicted segment-level differences are consistent with human perception.
+                </p>
+            </section>
 
-    <div class="song-container">
-        <h3>Song 4</h3>
-        <div class="label">Predicted Lower Quality</div>
-        <audio controls src="./demo_audio/740669132589078000_17_A.mp3"></audio>
-        <div class="label">Predicted Higher Quality</div>
-        <audio controls src="./demo_audio/740669132589078000_20_C.mp3"></audio>
-    </div>
+            <section id="case-study" class="section-card">
+                <h2>Case Study</h2>
+                <p>
+                    The figure below shows the temporal score curve predicted by our framework for a representative song
+                    from the test set. Beyond assigning a single overall quality score, the framework reveals clear
+                    quality variations across individual segments, reflecting the dynamic nature of vocal performance
+                    throughout a complete track.
+                </p>
+                <p>
+                    To further examine whether these local variations are perceptually meaningful, we highlight two
+                    representative regions for detailed analysis. These regions correspond directly to the two excerpts
+                    of Song 1 provided on this page: Segment A represents a lower predicted quality, and Segment B
+                    represents a higher predicted quality.
+                </p>
 
-    <div class="song-container">
-        <h3>Song 5</h3>
-        <div class="label">Predicted Lower Quality</div>
-        <audio controls src="./demo_audio/1443239989497080000_4_A.mp3"></audio>
-        <div class="label">Predicted Higher Quality</div>
-        <audio controls src="./demo_audio/1443239989497080000_24_C.mp3"></audio>
-    </div>
+                <div class="figure-box">
+                    <iframe
+                        class="figure-frame"
+                        src="./figure_case_study_cropped.pdf"
+                        title="Temporal score curve case study figure">
+                    </iframe>
+                    <div class="figure-fallback">
+                        If the figure does not display in your browser, please open
+                        <a href="./figure_case_study_cropped.pdf" target="_blank" rel="noopener">the figure file</a>.
+                    </div>
+                    <div class="caption">
+                        <strong>Figure 1.</strong> Predicted temporal score curve for a complete song.
+                        The red dashed boxes highlight Segment A and Segment B, corresponding to the
+                        lower-scoring and higher-scoring excerpts of Song 1 provided below.
+                    </div>
+                </div>
 
+                <p>
+                    In the segment receiving a lower score, the vocal delivery appears less stable, particularly in
+                    phrases within the lower vocal register, where the descending pitches are not fully supported,
+                    resulting in a less stable tonal center. This leads to a weaker sense of intonational precision
+                    and phrase support. In addition, the phrasing is comparatively less cohesive, with several note
+                    transitions sounding less smoothly connected, which reduces the overall fluency of the performance.
+                </p>
+                <p>
+                    By contrast, the segment receiving a higher score exhibits a more stable pitch contour and a clearer
+                    tonal center, especially during sustained notes and phrase transitions. The vocal line appears better
+                    supported, with more consistent breath control and a more continuous phrase shape, resulting in a
+                    stronger sense of projection and musical coherence.
+                </p>
+                <p>
+                    Taken together, the comparison suggests that the predicted score variations align closely with
+                    human perception. As demonstrated in this case study, the framework successfully tracks local
+                    variations in vocal delivery that influence human evaluation.
+                </p>
+            </section>
+
+            <section id="subjective-evaluation" class="section-card">
+                <h2>Subjective Evaluation</h2>
+                <p>
+                    To further examine whether the segment-level quality differences identified by our framework are
+                    perceptually meaningful, we conducted a small-scale pairwise subjective evaluation. We randomly
+                    selected five full-length songs from the test set. For each song, we selected two audio segments:
+                    Segment A, predicted as lower quality, and Segment B, predicted as higher quality. Participants
+                    were asked to conduct a blind pairwise evaluation and identify the segment exhibiting better
+                    singing performance.
+                </p>
+                <p>
+                    A total of 12 listeners participated in the evaluation, including 8 males and 4 females. To
+                    account for varying levels of musical expertise, the participant pool included 8 amateur music
+                    enthusiasts and 4 individuals with systematic musical training or professional musical backgrounds.
+                </p>
+                <p>
+                    Across the five songs, 52 out of 60 valid judgments were aligned with the model predictions,
+                    corresponding to an agreement rate of 86.7%. Agreement remained consistently high across most song
+                    pairs. These results suggest that the segment-level quality differences identified by the framework
+                    are generally consistent with human perception. Given the modest scale of this study, we regard
+                    it as supplementary qualitative evidence supporting the effectiveness of the proposed framework.
+                </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Song ID</th>
+                                <th>Votes for Seg. A</th>
+                                <th>Votes for Seg. B</th>
+                                <th>Agreement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Song 1</td>
+                                <td>1</td>
+                                <td>11</td>
+                                <td>91.7%</td>
+                            </tr>
+                            <tr>
+                                <td>Song 2</td>
+                                <td>0</td>
+                                <td>12</td>
+                                <td>100.0%</td>
+                            </tr>
+                            <tr>
+                                <td>Song 3</td>
+                                <td>1</td>
+                                <td>11</td>
+                                <td>91.7%</td>
+                            </tr>
+                            <tr>
+                                <td>Song 4</td>
+                                <td>3</td>
+                                <td>9</td>
+                                <td>75.0%</td>
+                            </tr>
+                            <tr>
+                                <td>Song 5</td>
+                                <td>3</td>
+                                <td>9</td>
+                                <td>75.0%</td>
+                            </tr>
+                            <tr>
+                                <td>Total</td>
+                                <td>8</td>
+                                <td>52</td>
+                                <td>86.7%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="audio-demo" class="section-card">
+                <h2>Audio Demo</h2>
+                <p>
+                    For each song, Segment A corresponds to the lower predicted quality excerpt, and Segment B
+                    corresponds to the higher predicted quality excerpt. Reviewers may listen to each pair in any order.
+                </p>
+
+                <div class="song-container">
+                    <div class="song-header">
+                        <h3>Song 1</h3>
+                        <p class="song-note">
+                            Case-study pair corresponding to the highlighted regions in Figure 1.
+                        </p>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment A — Lower Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/4_011_8_A.mp3"></audio>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment B — Higher Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/4_011_51_C.mp3"></audio>
+                    </div>
+                </div>
+
+                <div class="song-container">
+                    <div class="song-header">
+                        <h3>Song 2</h3>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment A — Lower Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/5_028_9_A.mp3"></audio>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment B — Higher Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/5_028_39_C.mp3"></audio>
+                    </div>
+                </div>
+
+                <div class="song-container">
+                    <div class="song-header">
+                        <h3>Song 3</h3>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment A — Lower Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/9_089_3_A.mp3"></audio>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment B — Higher Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/9_089_15_C.mp3"></audio>
+                    </div>
+                </div>
+
+                <div class="song-container">
+                    <div class="song-header">
+                        <h3>Song 4</h3>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment A — Lower Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/740669132589078000_17_A.mp3"></audio>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment B — Higher Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/740669132589078000_20_C.mp3"></audio>
+                    </div>
+                </div>
+
+                <div class="song-container">
+                    <div class="song-header">
+                        <h3>Song 5</h3>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment A — Lower Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/1443239989497080000_4_A.mp3"></audio>
+                    </div>
+
+                    <div class="audio-block">
+                        <div class="label">Segment B — Higher Predicted Quality</div>
+                        <audio controls preload="none" src="./demo_audio/1443239989497080000_24_C.mp3"></audio>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            This page is prepared for anonymous review purposes.
+        </footer>
+    </div>
 </body>
 </html>
